@@ -15,21 +15,35 @@ public class IAction {
     @Inject
     IQueryConstruction objIQueryConstruction;
     @Inject
-    ReadProperties properties = new ReadProperties();
-    public String resourceLocation = properties.getPropValues("RESOURCES_LOCATION");
 
-    public String warName = properties.getPropValues("WARNAME");
-    String elasticDbUrl = properties.getPropValues("ELASTIC_URL");
-    public String searchUrl = properties.getPropValues("SEARCH_URL");
-    public String dataBase = properties.getPropValues("DATABASE");
-    public String indexname = properties.getPropValues("INDEXNAME");
+    public String resourceLocation;
 
-    public IAction() throws IOException {
-    }
+    public String warName;
+    String elasticDbUrl;
+    public String searchUrl;
+    public String dataBase;
+    public String indexname;
 
-    public String performSearch(String query){
+
+    public String performSearch(String query) {
+        setProperties();
         query = objISynthesis.preprocessQuery(query);
         query = objIQueryConstruction.findQueryParams(query);
         return "";
+    }
+
+    public void setProperties() {
+        ReadProperties properties = new ReadProperties();
+        try {
+            resourceLocation = properties.getPropValues("RESOURCES_LOCATION");
+            warName = properties.getPropValues("WARNAME");
+            elasticDbUrl = properties.getPropValues("ELASTIC_URL");
+            searchUrl = properties.getPropValues("SEARCH_URL");
+            dataBase = properties.getPropValues("DATABASE");
+            indexname = properties.getPropValues("INDEXNAME");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

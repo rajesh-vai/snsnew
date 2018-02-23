@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,8 +22,6 @@ public class IQueryConstruction extends IAction{
     @Inject
     ISNSDoubleQuery objISNSDoubleQuery;
 
-    public IQueryConstruction() throws IOException {
-    }
 
     public String getInputQuery() {
         return inputQuery;
@@ -61,7 +58,7 @@ public class IQueryConstruction extends IAction{
     public String findQueryParams(String query) {
         try {
             if (objISNSCoreData.getFieldMapObject().length() < 1) {
-                objISNSCoreData.loadFieldMap(resourceLocation+"/feed_data_field_map.json");
+                objISNSCoreData.loadFieldMap(resourceLocation + "/feed_data_field_map.json");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,13 +66,23 @@ public class IQueryConstruction extends IAction{
         setInputQuery(query);
         query = findStringFields();
         String doubleFieldQuery = findDoubleFields();
+        try {
+            HashMap<String, HashSet<String>> field_titles = findCategoryOrTitle(query, "title");
+            HashMap<String, HashSet<String>> allStringField = getStringFields();
+            if (allStringField.size() > 0 && field_titles.size() > 0) {
+                allStringField.put("title", field_titles.get("title"));
+                setStringFields(allStringField);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "";
     }
 
     private String findStringFields() {
         String query = getInputQuery();
         try {
-            HashMap<String, HashSet<String>> catFound = findCategory(query);
+            HashMap<String, HashSet<String>> catFound = findCategoryOrTitle(query,"category");
             if (getCategoriesInQuery().isEmpty()) {
                 catFound = findCategoryClassification(query);
             }
@@ -113,11 +120,11 @@ public class IQueryConstruction extends IAction{
         return field_set;
     }
 
-    private HashMap<String, HashSet<String>> findCategory(String q) throws Exception {
+    private HashMap<String, HashSet<String>> findCategoryOrTitle(String q, String field) throws Exception {
         HashMap<String, HashSet<String>> field_set = new HashMap<>();
         ArrayList<String> catToBeRemoved = new ArrayList<>();
         String[] w = q.split("\\W+");
-        JSONArray categoryListsFromMap = objISNSCoreData.getFieldMapObject().getJSONObject("categories_titles").getJSONArray("categories");
+        JSONArray categoryListsFromMap = objISNSCoreData.getFieldMapObject().getJSONObject("categories_titles").getJSONArray(field);
         HashSet<String> tempSetCategory = new HashSet<>();
         for (int i = 0; i < w.length; i++) {
             for (int j = 0; j < categoryListsFromMap.length(); j++) {
@@ -133,7 +140,7 @@ public class IQueryConstruction extends IAction{
         }
         setInputQuery(inputQry);
         if (tempSetCategory.size() > 0) {
-            field_set.put("category", tempSetCategory);
+            field_set.put(field, tempSetCategory);
             setCategoriesInQuery(tempSetCategory);
         }
 

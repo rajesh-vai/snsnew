@@ -27,11 +27,11 @@ public class Wiring {
     }
 
     @Bean
-    IAction objIAction() throws IOException {
+    IAction objIAction()  {
         return new IAction();
     }
     @Bean
-    IQueryConstruction objIQueryConstruction() throws IOException {
+    IQueryConstruction objIQueryConstruction()  {
         return new IQueryConstruction();
     }
 
