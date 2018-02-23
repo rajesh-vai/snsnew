@@ -1,5 +1,6 @@
 package core;
 
+import search.ISNSDoubleQuery;
 import search.ISynthesis;
 import search.IAction;
 import search.IQueryConstruction;
@@ -10,6 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import utils.DbUtils;
 import utils.FileUtils;
+
+import java.io.IOException;
 
 /**
  * Created by Rajesh on 17-02-2018.
@@ -24,12 +27,17 @@ public class Wiring {
     }
 
     @Bean
-    IAction objIAction() {
+    IAction objIAction() throws IOException {
         return new IAction();
     }
     @Bean
-    IQueryConstruction objIQueryConstruction() {
+    IQueryConstruction objIQueryConstruction() throws IOException {
         return new IQueryConstruction();
+    }
+
+    @Bean
+    ISNSDoubleQuery objISNSDoubleQuery() {
+        return new ISNSDoubleQuery();
     }
 
     @Bean

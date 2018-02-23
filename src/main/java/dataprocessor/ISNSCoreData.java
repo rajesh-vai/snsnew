@@ -37,7 +37,7 @@ public class ISNSCoreData {
     JSONObject fieldMapObject  = new JSONObject();
 
     public void loadFieldMap(String folderName) throws Exception {
-        JSONObject jsonObj  = new JSONObject( fileUtils.readFileToString("path") );
+        JSONObject jsonObj  = new JSONObject( fileUtils.readFileToString(folderName) );
         setFieldMapObject(jsonObj);
         jsonObj = null;
     }
