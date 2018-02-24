@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import utils.DbUtils;
 import utils.FileUtils;
+import utils.ReadProperties;
 
 import java.io.IOException;
 
@@ -27,11 +28,12 @@ public class Wiring {
     }
 
     @Bean
-    IAction objIAction()  {
+    IAction objIAction() {
         return new IAction();
     }
+
     @Bean
-    IQueryConstruction objIQueryConstruction()  {
+    IQueryConstruction objIQueryConstruction() {
         return new IQueryConstruction();
     }
 
@@ -54,6 +56,7 @@ public class Wiring {
     FileUtils objFileUtils() {
         return new FileUtils();
     }
+
     @Bean
     Synonyms objSynonyms() {
         return new Synonyms();
@@ -62,6 +65,16 @@ public class Wiring {
     @Bean
     Noise objNoise() {
         return new Noise();
+    }
+
+    @Bean
+    ReadProperties properties() {
+        return new ReadProperties();
+    }
+
+    @Bean
+    PostProcessor objPostProcessor() {
+        return new PostProcessor();
     }
 
 }

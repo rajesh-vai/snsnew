@@ -36,9 +36,38 @@ public class ISNSCoreData {
 
     JSONObject fieldMapObject  = new JSONObject();
 
+    public JSONObject getCompanyConfig() {
+        return companySettingObject;
+    }
+
+    public void setCompanySettingObject(JSONObject companySettingObject) {
+        this.companySettingObject = companySettingObject;
+    }
+
+    JSONObject companySettingObject  = new JSONObject();
+
+
+    public JSONObject getFieldMapObjectDouble() {
+        return fieldMapObjectDouble;
+    }
+
+    public void setFieldMapObjectDouble(JSONObject fieldMapObjectDouble) {
+        this.fieldMapObjectDouble = fieldMapObjectDouble;
+    }
+
+    JSONObject fieldMapObjectDouble  = new JSONObject();
+
     public void loadFieldMap(String folderName) throws Exception {
         JSONObject jsonObj  = new JSONObject( fileUtils.readFileToString(folderName) );
         setFieldMapObject(jsonObj);
-        jsonObj = null;
+    }
+
+    public void companySettings(String folderName){
+        JSONObject jsonObj  = new JSONObject( fileUtils.readFileToString(folderName) );
+        setCompanySettingObject(jsonObj);
+    }
+    public void loadFieldMapDouble(String folderName){
+        JSONObject jsonObj  = new JSONObject( fileUtils.readFileToString(folderName) );
+        setFieldMapObjectDouble(jsonObj);
     }
 }
