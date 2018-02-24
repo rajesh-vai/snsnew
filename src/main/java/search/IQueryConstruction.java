@@ -100,34 +100,40 @@ public class IQueryConstruction{
             e.printStackTrace();
         }
         HashMap<String, HashSet<String>> allfields = getStringFields();
-        allfields.put("title", field_titles.get("title"));
+        if(field_titles.size() > 0)
+            allfields.put("title", field_titles.get("title"));
         String strESQuery = "";
         String primaryQuery = "", secondaryQuery = "";
-        for (String s : getStringFields().keySet()) {
-            HashSet<String> sset = getStringFields().get(s);
-            String values = "";
-            for (String ss : sset) {
-                values = values + "\"" + ss + "\",";
-            }
-            if (values.endsWith(",")) {
-                values = values.substring(0, values.length() - 1);
-            }
+        if(getStringFields().size() > 1) {
+            for (String s : getStringFields().keySet()) {
+                HashSet<String> sset = getStringFields().get(s);
+                if (sset.size() < 1) {
+                    continue;
+                }
+                String values = "";
+                for (String ss : sset) {
+                    values = values + "\"" + ss + "\",";
+                }
+                if (values.endsWith(",")) {
+                    values = values.substring(0, values.length() - 1);
+                }
 
-            if (s.equals("category") || s.equals("brand")) {
-                primaryQuery = primaryQuery + "{ \"terms\":{ \"" + s + "\":[  " + values + " ]  } },";
-            } else {
-                secondaryQuery = secondaryQuery + "{ \"terms\":{ \"" + s + "\":[  " + values + " ]  } },";
+                if (s.equals("category") || s.equals("brand")) {
+                    primaryQuery = primaryQuery + "{ \"terms\":{ \"" + s + "\":[  " + values + " ]  } },";
+                } else {
+                    secondaryQuery = secondaryQuery + "{ \"terms\":{ \"" + s + "\":[  " + values + " ]  } },";
+                }
             }
-        }
-        if (secondaryQuery.length() > 0) {
-            if (secondaryQuery.endsWith(",")) {
-                secondaryQuery = secondaryQuery.substring(0, secondaryQuery.length() - 1);
+            if (secondaryQuery.length() > 0) {
+                if (secondaryQuery.endsWith(",")) {
+                    secondaryQuery = secondaryQuery.substring(0, secondaryQuery.length() - 1);
+                }
+                secondaryQuery = "{\"bool\": { \"should\": [" + secondaryQuery + "]} }";
             }
-            secondaryQuery = "{\"bool\": { \"should\": [" + secondaryQuery + "]} }";
-        }
-        strESQuery = primaryQuery + secondaryQuery;
-        if (strESQuery.endsWith(",")) {
-            strESQuery = strESQuery.substring(0, strESQuery.length() - 1);
+            strESQuery = primaryQuery + secondaryQuery;
+            if (strESQuery.endsWith(",")) {
+                strESQuery = strESQuery.substring(0, strESQuery.length() - 1);
+            }
         }
         return "\"must\":["+strESQuery+"],";
     }
@@ -169,6 +175,7 @@ public class IQueryConstruction{
                 setInputQuery(q.replace(w, "").trim());
             }
         }
+        setCategoriesInQuery(tempSetCategory);
         field_set.put("category", tempSetCategory);
         return field_set;
     }
